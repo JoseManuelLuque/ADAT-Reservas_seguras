@@ -6,6 +6,7 @@ import com.es.sessionsecurity.model.Session
 import com.es.sessionsecurity.model.Usuario
 import com.es.sessionsecurity.repository.SessionRepository
 import com.es.sessionsecurity.repository.UsuarioRepository
+import com.es.sessionsecurity.util.CipherUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -19,6 +20,8 @@ class UsuarioService {
     private lateinit var usuarioRepository: UsuarioRepository
     @Autowired
     private lateinit var sessionRepository: SessionRepository
+    @Autowired
+    private lateinit var cifrado: CipherUtils
 
     fun login(userLogin: Usuario) : String {
 
@@ -34,7 +37,7 @@ class UsuarioService {
             .orElseThrow{NotFoundException("El usuario proporcionado no existe en BDD")}
 
         // 2 Compruebo nombre y pass
-        if(userBD.password == userLogin.password) {
+        if(userBD.password == cifrado.decrypt(userLogin.password, "KeyEncriptar")) {
             // 3 GENERAR EL TOKEN
             var token: String = ""
             token = UUID.randomUUID().toString()
@@ -55,6 +58,10 @@ class UsuarioService {
             // SI LA CONTRASEÑA NO COINCIDE, LANZAMOS EXCEPCIÓN
             throw NotFoundException("Las credenciales son incorrectas")
         }
+    }
+
+    fun registrarUsuario(usuario: Usuario): Usuario {
+        return usuarioRepository.save<Usuario>(usuario)
     }
 
 }

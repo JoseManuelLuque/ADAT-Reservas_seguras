@@ -2,6 +2,7 @@ package com.es.sessionsecurity.model
 
 import jakarta.persistence.*
 
+@Suppress("JpaObjectClassSignatureInspection")
 @Entity
 @Table(name = "usuarios")
 data class Usuario(
@@ -10,6 +11,12 @@ data class Usuario(
     var id: Long?,
     @Column(unique = true)
     var nombre:String,
-    var password:String
+    var password:String,
+    @Enumerated(EnumType.STRING)
+    var rol: Rol
 ) {
+}
+
+enum class Rol {
+    USER, ADMIN
 }
