@@ -37,7 +37,7 @@ class UsuarioService {
             .orElseThrow{NotFoundException("El usuario proporcionado no existe en BDD")}
 
         // 2 Compruebo nombre y pass
-        if(userBD.password == cifrado.decrypt(userLogin.password, "KeyEncriptar")) {
+        if(userBD.password == cifrado.encrypt(userLogin.password, "KeyEncriptar")) {
             // 3 GENERAR EL TOKEN
             var token: String = ""
             token = UUID.randomUUID().toString()
